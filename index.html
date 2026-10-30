@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" translate="no" class="notranslate">
 <head>
 <meta charset="utf-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lembrei</title>
 <style>
@@ -6524,6 +6525,8 @@ html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#fcf8ff}
 <script>
 (function(){
   var telas=document.querySelectorAll('.tela'),i=0;
+  function semTraducao(f){try{var h=f.contentDocument.documentElement;h.setAttribute('translate','no');h.classList.add('notranslate');}catch(e){}}
+  for(var k=0;k<telas.length;k++){(function(f){f.setAttribute('translate','no');f.addEventListener('load',function(){semTraducao(f);});semTraducao(f);})(telas[k]);}
   document.getElementById('proxima').addEventListener('click',function(){
     telas[i].classList.remove('ativa');
     i=(i+1)%telas.length;
