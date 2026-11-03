@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, Platform, Pressable, RefreshControl, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Aviso, type Acao, type AvisoDados } from '@/components/Aviso';
 import { CartaoItem } from '@/components/CartaoItem';
 import { Chip, ModalItem, type Rascunho } from '@/components/ModalItem';
 import { capturar, type Confirmar, type Sugestao } from '@/lib/captura';
 import { qualDia, rotulo } from '@/lib/datas';
+import { pedirAlarmeExato, prepararNotificacoes, sincronizarNotificacoes, temAlarmeExato } from '@/lib/notificacoes';
 import { supabase, type Item } from '@/lib/supabase';
 import { cor } from '@/lib/tema';
 
@@ -65,13 +66,18 @@ export default function Lista() {
   const [modal, setModal] = useState<{ rascunho: Rascunho; motivo: Confirmar | null; chave: number } | null>(null);
   const [aviso, setAviso] = useState<AvisoDados | null>(null);
   const contador = useRef(0);
+  const carregouOk = useRef(false); // só sincroniza notificações depois de ler a lista de verdade
+  const pediuExato = useRef(false);
 
   const carregar = useCallback(
     () =>
       buscarItens().then(({ data, error }) => {
         setCarregando(false);
         setErro(error ? 'Não consegui carregar seus itens.' : '');
-        if (data) setItens(data as Item[]);
+        if (data) {
+          carregouOk.current = true;
+          setItens(data as Item[]);
+        }
       }),
     [],
   );
@@ -79,6 +85,27 @@ export default function Lista() {
 
   const avisar = useCallback((texto: string, acoes: Acao[] = []) => setAviso({ id: ++contador.current, texto, acoes }), []);
   const fecharAviso = useCallback(() => setAviso(null), []);
+
+  // Permissão de notificação ao abrir (no Android 13+ o sistema pergunta uma vez).
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    prepararNotificacoes().then((ok) => {
+      if (!ok) avisar('Notificações desligadas: ative nas configurações do Android para receber os lembretes.');
+    });
+  }, [avisar]);
+
+  // Agendamentos do aparelho sempre iguais à lista. Se há lembrete futuro e falta o alarme exato, sugere uma vez.
+  useEffect(() => {
+    if (Platform.OS === 'web' || !carregouOk.current) return;
+    sincronizarNotificacoes(itens).then(async () => {
+      const temFuturo = itens.some((i) => i.tipo === 'lembrete' && i.remind_at && new Date(i.remind_at).getTime() > Date.now());
+      if (!temFuturo || pediuExato.current || (await temAlarmeExato())) return;
+      pediuExato.current = true;
+      avisar('Para o lembrete tocar na hora exata, permita "Alarmes e lembretes".', [
+        { rotulo: 'Permitir', onPress: () => pedirAlarmeExato().then(() => sincronizarNotificacoes(itens)) },
+      ]);
+    });
+  }, [itens, avisar]);
   const abrirModal = (rascunho: Rascunho, motivo: Confirmar | null = null) =>
     setModal({ rascunho, motivo, chave: ++contador.current });
 
