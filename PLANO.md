@@ -24,7 +24,8 @@
 **App Android (Expo)**
 - **Login:** e-mail e senha (Supabase Auth). No **cadastro**, o usuário define a senha, marca "li e aceito os termos e a privacidade" e recebe **um link de confirmação**, uma vez só. Depois disso, entra sempre com e-mail e senha. Mudou em 03/11/2026: o código por e-mail exigia SMTP próprio para editar o template. "Esqueci a senha" ainda está pendente.
 - **Captura com IA:** o usuário escreve em linguagem natural e uma Edge Function devolve tipo, título e data. A chave da Anthropic fica só no servidor.
-- **Lista:** abas Hoje / Amanhã / Próximos / Tudo, filtro por tipo e busca simples por texto.
+- **Lista:** abas Hoje / Amanhã / Próximos / Tudo, filtro por tipo e busca simples por texto. "Hoje" inclui os atrasados. Itens sem data aparecem só em "Tudo", que é a aba padrão.
+- **Seletor de data:** por enquanto, campos DD/MM/AAAA e HH:MM com atalhos (Hoje, Amanhã, 9h, 18h…), porque funcionam no celular e na web. O seletor nativo do Android fica para depois.
 - Marcar como feito, editar e apagar.
 - **Lembretes:** notificação **local**, agendada no próprio aparelho com `expo-notifications` e a permissão `SCHEDULE_EXACT_ALARM`, que o usuário concede (o Android 14+ começa negando). O `USE_EXACT_ALARM` ficou de fora porque a Play Store o restringe a apps de despertador e de calendário. Ao abrir, o app reagenda tudo a partir do banco, o que cobre reinstalação e edições.
 
