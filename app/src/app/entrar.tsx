@@ -49,10 +49,17 @@ export default function Entrar() {
     if (!aceitou) return setErro('Para continuar, aceite os termos e a privacidade.');
     setErro('');
     setCarregando(true);
-    const { error } = await supabase.auth.signUp({ email: limpo, password: senha });
+    const { data, error } = await supabase.auth.signUp({ email: limpo, password: senha });
     setCarregando(false);
     if (error) {
-      return setErro(error.code === 'weak_password' ? 'Senha fraca demais, tenta outra.' : 'Não consegui criar a conta. Tenta de novo em 1 minuto.');
+      if (error.code === 'weak_password') return setErro('Senha fraca demais, tenta outra.');
+      if (error.code === 'over_email_send_rate_limit') return setErro('Muitos e-mails enviados na última hora. Tenta de novo mais tarde.');
+      return setErro(`Não consegui criar a conta (${error.code ?? error.status ?? 'erro'}).`);
+    }
+    // E-mail já confirmado: o Supabase finge sucesso, não manda e-mail e devolve identities vazio.
+    if (data.user?.identities?.length === 0) {
+      setModo('entrar');
+      return setErro('Esse e-mail já tem conta. Entre com sua senha.');
     }
     setEmail(limpo);
     trocar('confirmar');

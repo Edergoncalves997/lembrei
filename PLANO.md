@@ -88,7 +88,9 @@ O RLS restringe cada usuário aos próprios dados. Novas tabelas só quando um r
 ## 8. Qualidade da IA
 
 - O texto original sempre fica salvo no item.
-- O arquivo `backend/supabase/tests/parser-casos.json` reúne cerca de 50 frases reais em português com a resposta esperada (ex.: "dia 5 do 10 às 5 da tarde", "sexta", "daqui 3 dias"). Ele é rodado a cada mudança no prompt.
+- O arquivo `backend/supabase/tests/parser-casos.json` reúne 55 frases em português com a resposta esperada (ex.: "dia 5 do 12 às 5 da tarde", "sexta", "daqui 3 dias"). Rode `deno task parser` em `backend/` a cada mudança no prompt. A meta é 85%.
+- **Convenções do parser:** "de manhã" sem hora vira 9h, "à tarde" vira 14h e "à noite" vira 20h. Um horário sem dia vale para hoje; se já passou, o app pede confirmação. "Dia N" que já passou cai no mês seguinte. Uma tarefa com data vira lembrete. Se a IA falhar, a captura é salva como nota, para não perder nada.
+- **Função:** `backend/supabase/functions/capturar`, com o Claude Haiku 5.5 (effort `low`) e saída estruturada. A IA devolve data e hora locais; o código (`decidir.ts`, com testes em `deno task test`) converte para UTC e decide se precisa confirmar.
 
 ## 9. Repositório
 
@@ -131,6 +133,7 @@ lembrei antigo/  protótipo das telas (referência visual, não faz parte do rep
 
 - Domínio e marca não registrados.
 - **A landing ainda promete WhatsApp** (decisão de 03/11: mantê-la como está). A política de privacidade cita a Meta e o WhatsApp, mas o app não usa nenhum dos dois. Revisar antes de abrir o beta.
+- **E-mail de confirmação (03/11/2026):** o SMTP padrão do Supabase manda poucos e-mails por hora e não deixa editar os templates. Durante os testes, o "Confirm email" fica **desligado**. **Antes do beta:** configurar o Resend como SMTP, religar o "Confirm email", traduzir o template para português e definir o Site URL.
 - **A lista de espera pede WhatsApp, mas a Play Store pede o Gmail.** O teste interno exige a conta Google de cada testador, então vai ser preciso pedir o e-mail a cada convidado.
 - **Sem WhatsApp, a v1 é "mais um app de lembretes"**, e o diferencial (§2) segue indefinido.
 - Quando o WhatsApp voltar, o prazo de aprovação da Meta não está sob nosso controle, e o domínio provavelmente vira obrigatório.
