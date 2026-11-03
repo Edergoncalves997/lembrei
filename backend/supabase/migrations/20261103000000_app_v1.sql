@@ -1,9 +1,9 @@
--- v1 só app (PLANO.md §7). O login é por OTP de e-mail (Supabase Auth); auth.users é a conta.
+-- v1 só app (PLANO.md §7). Login por e-mail e senha (Supabase Auth); auth.users é a conta.
 
 create table public.profiles (
   id                uuid primary key references auth.users (id) on delete cascade,
   fuso              text not null default 'America/Sao_Paulo',
-  -- O app só deixa pedir o código depois de marcar o aceite, então criar a conta = aceitar.
+  -- O app só deixa criar a conta depois de marcar o aceite, então criar a conta = aceitar.
   termos_aceitos_em timestamptz not null default now(),
   telefone          text unique check (telefone ~ '^55[0-9]{10,11}$'), -- vinculado quando o bot chegar
   criado_em         timestamptz not null default now()

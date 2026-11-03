@@ -22,7 +22,7 @@
 ### v1: beta fechado (só o app)
 
 **App Android (Expo)**
-- **Login:** código de 6 dígitos por e-mail (Supabase Auth + Resend), com a caixa "li e aceito os termos e a privacidade" na mesma tela.
+- **Login:** e-mail e senha (Supabase Auth). No **cadastro**, o usuário define a senha, marca "li e aceito os termos e a privacidade" e recebe **um link de confirmação**, uma vez só. Depois disso, entra sempre com e-mail e senha. Mudou em 03/11/2026: o código por e-mail exigia SMTP próprio para editar o template. "Esqueci a senha" ainda está pendente.
 - **Captura com IA:** o usuário escreve em linguagem natural e uma Edge Function devolve tipo, título e data. A chave da Anthropic fica só no servidor.
 - **Lista:** abas Hoje / Amanhã / Próximos / Tudo, filtro por tipo e busca simples por texto.
 - Marcar como feito, editar e apagar.
@@ -60,7 +60,7 @@
 |---|---|
 | App | React Native + Expo (EAS), **só Android** no beta (teste interno da Play Store) |
 | Backend | **Supabase Edge Functions** (Deno/TypeScript): na v1, só a função de captura/parser |
-| Banco / Auth | Supabase (Postgres + RLS, Auth com OTP por e-mail) |
+| Banco / Auth | Supabase (Postgres + RLS, Auth com e-mail e senha + confirmação por link) |
 | Lembretes | Notificação local (`expo-notifications`). `pg_cron` só quando o WhatsApp chegar |
 | IA | Claude Haiku 5.5, saída em JSON validado (confirmar preço ao implementar) |
 | Landing | Next.js estático na Vercel |
