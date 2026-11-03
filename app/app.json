@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Lembrinha",
+    "slug": "lembrinha",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#4241bc",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "br.com.lembrinha.app",
+      "permissions": [
+        "android.permission.SCHEDULE_EXACT_ALARM"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-sqlite",
+      [
+        "expo-notifications",
+        {
+          "color": "#4241bc",
+          "defaultChannel": "lembretes"
+        }
+      ]
+    ],
+    "scheme": "lembrinha",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

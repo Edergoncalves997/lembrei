@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* Tokens herdados do protótipo do app (lembrei antigo/index.html) */
+@theme {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --color-surface: #fcf8ff;
+  --color-surface-low: #f5f2ff;
+  --color-surface-container: #efecff;
+  --color-surface-high: #e8e6fc;
+  --color-card: #ffffff;
+  --color-ink: #1a1a2a;
+  --color-ink-soft: #464553;
+  --color-outline: #777585;
+  --color-outline-soft: #c7c4d6;
+
+  --color-primary: #4241bc;
+  --color-primary-500: #5b5bd6;
+  --color-primary-100: #e2dfff;
+  --color-primary-50: #efecff;
+
+  --color-sun: #fdc74b;
+  --color-sun-100: #ffdf9f;
+  --color-sun-ink: #5c4300;
+
+  --color-mint: #007a53;
+  --color-mint-100: #d6f7e8;
+
+  --color-chat-bg: #efeae2;
+  --color-chat-out: #d9fdd3;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.soft-shadow {
+  box-shadow:
+    0 12px 32px -6px rgb(91 91 214 / 0.12),
+    0 2px 8px -2px rgb(30 30 46 / 0.04);
+}
+
+.subtle-border {
+  border: 1px solid rgb(91 91 214 / 0.08);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .float-slow {
+    animation: float 6s ease-in-out infinite;
+  }
+  .float-slower {
+    animation: float 8s ease-in-out infinite reverse;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -8px;
+  }
+}
